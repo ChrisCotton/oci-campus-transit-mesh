@@ -125,7 +125,7 @@ terraform plan
 terraform apply
 ```
 
-## Interview Trap Questions This Repo Answers
+## Practical Problems and Client Queries This Repo Resolves
 
 **Q: How do you connect campus networks and AWS VPCs to multiple OCI VCNs without managing complex point-to-point peerings?**
 
