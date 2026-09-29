@@ -1,0 +1,28 @@
+# ============================================================
+# OCI Campus Transit Mesh — Example tfvars
+# Copy to terraform.tfvars and fill in your values
+# ============================================================
+
+# OCI Provider credentials
+oci_tenancy_ocid     = "ocid1.tenancy.oc1..aaaaaaaaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+oci_user_ocid        = "ocid1.user.oc1..aaaaaaaaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+oci_fingerprint      = "aa:bb:cc:dd:ee:ff:00:11:22:33:44:55:66:77:88:99"
+oci_private_key_path = "~/.oci/oci_api_key.pem"
+oci_region           = "us-sanjose-1"
+
+# Compartment
+compartment_ocid = "ocid1.compartment.oc1..aaaaaaaaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+# Networking
+hub_vcn_cidr      = "10.0.0.0/16"
+spoke_vcn_cidr    = "10.1.0.0/16"
+hub_subnet_cidr  = "10.0.1.0/24"
+spoke_subnet_cidr = "10.1.1.0/24"
+
+# Identity Federation
+idp_name          = "stanford-shibboleth"
+saml_metadata_url = "https://idp.stanford.edu/shibboleth/metadata"
+
+# Tags
+project_name = "campus-transit-mesh"
+environment  = "prod"
