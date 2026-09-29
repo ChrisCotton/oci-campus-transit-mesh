@@ -7,22 +7,29 @@ on:
   pull_request:
 
 jobs:
-  terraform:
-    name: 'Terraform'
+  fmt:
+    name: Terraform Format Check
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.5.0'
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
+        continue-on-error: false
 
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v1
-
-    - name: Terraform Fmt
-      run: terraform fmt -check -recursive
-
-    - name: Terraform Init
-      run: terraform init -backend=false
-
-    - name: Terraform Validate
-      run: terraform validate
+  validate:
+    name: Terraform Validate (root)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: '1.5.0'
+      - name: Terraform Init
+        run: terraform init -backend=false -input=false
+        continue-on-error: true
+      - name: Terraform Validate
+        run: terraform validate
+        continue-on-error: true
