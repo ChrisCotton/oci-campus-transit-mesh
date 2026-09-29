@@ -127,19 +127,19 @@ terraform plan
 terraform apply
 ```
 
-## Practical Problems and Client Queries This Repo Resolves
+## Problems Encountered and Solutions Rendered
 
-**Q: How do you connect campus networks and AWS VPCs to multiple OCI VCNs without managing complex point-to-point peerings?**
+### Campus-to-Cloud Transit: Beyond Point-to-Point Peerings
 
-In early OCI, you were stuck with 1:1 Local Peering Gateways (LPGs). In modern OCI, you use DRG v2 as a centralized transit router. The DRG handles VCN attachments, FastConnect virtual circuits, and IPSec VPN tunnels using distinct DRG Route Tables and import distributions.
+The problem: an institution needs to connect campus networks and AWS VPCs to multiple OCI VCNs. The naive approach (Local Peering Gateways) creates a 1:1 mesh that doesn't scale. The solution: DRG v2 as a centralized transit router. The DRG handles VCN attachments, FastConnect virtual circuits, and IPSec VPN tunnels using distinct DRG Route Tables and import distributions. This is the same architectural pattern as AWS Transit Gateway, implemented through OCI's native primitives.
 
-**Q: How do your CI/CD pipelines or compute instances interact with OCI APIs without storing hardcoded API keys?**
+### Credential-Less CI/CD: Eliminating Static API Keys
 
-Never use static user API keys. Use Instance Principals combined with Dynamic Groups. Instances authenticate automatically using cryptographic certificates issued through instance metadata, bound to an IAM policy. This eliminates the entire class of credential leakage risks.
+The problem: CI/CD pipelines and compute instances need to interact with OCI APIs, but storing hardcoded API keys in code, files, or environment variables is a credential leakage risk. The solution: Instance Principals combined with Dynamic Groups. Instances authenticate automatically using cryptographic certificates issued through instance metadata, bound to an IAM policy. No static credentials. No key rotation. No secret management overhead.
 
-**Q: How do backend databases reach Object Storage or Autonomous Databases without exposing public IPs or paying egress fees?**
+### Private Service Access Without Egress Fees
 
-Configure a Service Gateway inside the VCN and route the `all-services` OSN CIDR block through it. Traffic to Oracle PaaS services never touches the public internet, and there are no data egress charges.
+The problem: backend databases and internal applications need to reach Object Storage or Autonomous Databases, but routing through a NAT Gateway exposes public IPs and incurs data egress charges. The solution: a Service Gateway inside the VCN routes the `all-services` OSN CIDR block through a private conduit. Traffic to Oracle PaaS services never touches the public internet.
 
 ## Operational Discussion Points
 
