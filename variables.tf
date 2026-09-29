@@ -69,9 +69,9 @@ variable "spoke_subnet_cidr" {
 # --- Identity Federation ---
 
 variable "idp_name" {
-  description = "Name of the identity provider (e.g., Stanford Shibboleth, Okta)"
+  description = "Name of the identity provider (e.g., Okta, Shibboleth, Azure AD)"
   type        = string
-  default     = "stanford-idp"
+  default     = "institutional-idp"
 }
 
 variable "saml_metadata_url" {

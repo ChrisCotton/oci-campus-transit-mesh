@@ -11,7 +11,7 @@ variable "compartment_id" {
 variable "idp_name" {
   description = "Name of the institutional identity provider"
   type        = string
-  default     = "stanford-idp"
+  default     = "institutional-idp"
 }
 
 variable "saml_metadata_xml" {

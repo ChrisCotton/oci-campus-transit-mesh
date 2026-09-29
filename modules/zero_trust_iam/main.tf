@@ -60,7 +60,7 @@ resource "oci_identity_policy" "automation_least_privilege" {
 
 # --- SAML Identity Provider Federation ---
 # Establishes a SAML 2.0 trust with the institutional IdP
-# (e.g., Stanford Shibboleth, Okta). Enterprise users authenticate
+# (e.g., Okta, Shibboleth, Azure AD). Enterprise users authenticate
 # through the campus directory instead of OCI-local credentials.
 #
 # In production, this creates a SAML IdP in the OCI Identity Domain

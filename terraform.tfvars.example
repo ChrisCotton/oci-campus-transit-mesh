@@ -20,8 +20,8 @@ hub_subnet_cidr  = "10.0.1.0/24"
 spoke_subnet_cidr = "10.1.1.0/24"
 
 # Identity Federation
-idp_name          = "stanford-shibboleth"
-saml_metadata_url = "https://idp.stanford.edu/shibboleth/metadata"
+idp_name          = "institutional-shibboleth"
+saml_metadata_url = "https://idp.example.edu/shibboleth/metadata"
 
 # Tags
 project_name = "campus-transit-mesh"
