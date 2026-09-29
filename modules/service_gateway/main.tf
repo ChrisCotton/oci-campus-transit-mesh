@@ -44,27 +44,3 @@ resource "oci_core_service_gateway" "sgw" {
     Purpose     = "private-paas-access"
   }
 }
-
-# --- Route Rule: Direct OSN traffic through the Service Gateway ---
-# Adds a route rule to the specified route table so that traffic
-# destined for Oracle services (OSN CIDR) goes through the SGW
-# instead of the NAT Gateway or Internet Gateway.
-
-resource "oci_core_route_table" "sgw_route_table" {
-  compartment_id = var.compartment_id
-  vcn_id         = var.vcn_id
-  display_name   = "${var.project_name}-${var.environment}-sgw-rt"
-
-  # Route Oracle services through the Service Gateway
-  route_rules {
-    destination       = data.oci_core_services.all_oci_services.services[0].cidr_block
-    destination_type = "SERVICE_CIDR_BLOCK"
-    network_entity_id = oci_core_service_gateway.sgw.id
-    description       = "Private routing for Object Storage, Autonomous DB, and PaaS services"
-  }
-
-  freeform_tags = {
-    Environment = var.environment
-    ManagedBy   = "terraform"
-  }
-}

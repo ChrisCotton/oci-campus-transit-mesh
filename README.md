@@ -1,6 +1,8 @@
 # OCI Campus Transit Mesh
 
-> Production-grade Terraform blueprint for hybrid campus-to-cloud transit networking, zero-trust identity federation, and credential-less automation on Oracle Cloud Infrastructure (OCI).
+> OCI architecture prototype exploring DRG hub-and-spoke transit, private Oracle service access, and workload IAM for campus-to-cloud environments.
+
+**Note:** This repository contains reference implementations, not production-ready deployments. No live cloud deployment has been validated against this code. The architecture diagram models the intended production state, but the Terraform code does not implement FastConnect, IPSec VPNs, BGP routing, firewall appliances, or AWS interconnectivity. These components are external to this blueprint and must be configured separately.
 
 This repository models the enterprise-scale architecture that research institutions and large enterprises need when running OCI alongside AWS: a Dynamic Routing Gateway (DRG v2) hub-and-spoke transit network, Instance Principals for zero-secret CI/CD, and Service Gateway routing for private PaaS access.
 

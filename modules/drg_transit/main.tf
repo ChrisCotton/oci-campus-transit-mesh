@@ -44,8 +44,9 @@ resource "oci_core_drg_attachment" "hub_attachment" {
 # --- Spoke VCN Attachment ---
 
 resource "oci_core_drg_attachment" "spoke_attachment" {
-  drg_id       = oci_core_drg.campus_transit_drg.id
-  display_name = "${var.project_name}-${var.environment}-spoke-vcn-attachment"
+  drg_id             = oci_core_drg.campus_transit_drg.id
+  display_name       = "${var.project_name}-${var.environment}-spoke-vcn-attachment"
+  drg_route_table_id = oci_core_drg_route_table.spokes_rt.id
 
   network_details {
     id   = var.spoke_vcn_id
@@ -100,13 +101,4 @@ resource "oci_core_drg_route_table" "spokes_rt" {
   }
 }
 
-# Associate the spoke DRG route table with the spoke attachment
-resource "oci_core_drg_attachment" "spoke_attachment_route_table" {
-  count               = 0  # Placeholder for future route table association updates
-  drg_id              = oci_core_drg.campus_transit_drg.id
-  display_name        = "spoke-rt-association"
-  network_details {
-    id   = var.spoke_vcn_id
-    type = "VCN"
-  }
-}
+

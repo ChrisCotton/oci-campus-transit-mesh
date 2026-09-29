@@ -14,8 +14,8 @@ variable "idp_name" {
   default     = "stanford-idp"
 }
 
-variable "saml_metadata_url" {
-  description = "SAML metadata URL or inline XML from the institutional IdP"
+variable "saml_metadata_xml" {
+  description = "SAML metadata XML from the institutional IdP"
   type        = string
   default     = ""
 }

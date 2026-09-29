@@ -38,7 +38,7 @@ resource "oci_core_vcn" "hub_vcn" {
   compartment_id = var.compartment_ocid
   cidr_block     = var.hub_vcn_cidr
   display_name   = "${var.project_name}-${var.environment}-hub-vcn"
-  dns_label      = substr("${var.project_name}hub", 0, 15)
+  dns_label      = substr(replace("${var.project_name}hub", "-", ""), 0, 15)
 
   freeform_tags = {
     Environment = var.environment
@@ -81,6 +81,13 @@ resource "oci_core_default_route_table" "hub_rt" {
     destination_type  = "CIDR_BLOCK"
     network_entity_id = oci_core_internet_gateway.hub_igw.id
   }
+
+  route_rules {
+    destination       = var.spoke_vcn_cidr
+    destination_type  = "CIDR_BLOCK"
+    network_entity_id = module.drg_transit.drg_id
+    description       = "Route to Spoke VCN via DRG"
+  }
 }
 
 # -----------------------------------------------------------
@@ -91,7 +98,7 @@ resource "oci_core_vcn" "spoke_vcn" {
   compartment_id = var.compartment_ocid
   cidr_block     = var.spoke_vcn_cidr
   display_name   = "${var.project_name}-${var.environment}-spoke-vcn"
-  dns_label      = substr("${var.project_name}spoke", 0, 15)
+  dns_label      = substr(replace("${var.project_name}spoke", "-", ""), 0, 15)
 
   freeform_tags = {
     Environment = var.environment
@@ -129,6 +136,13 @@ resource "oci_core_route_table" "spoke_rt" {
     description       = "Route to Hub VCN via DRG"
   }
 
+  route_rules {
+    destination       = module.service_gateway.osn_cidr_block
+    destination_type  = "SERVICE_CIDR_BLOCK"
+    network_entity_id = module.service_gateway.service_gateway_id
+    description       = "Private routing for Object Storage, Autonomous DB, and PaaS services"
+  }
+
   freeform_tags = {
     Environment = var.environment
     ManagedBy   = "terraform"
@@ -162,7 +176,6 @@ module "service_gateway" {
   source         = "./modules/service_gateway"
   compartment_id = var.compartment_ocid
   vcn_id         = oci_core_vcn.spoke_vcn.id
-  route_table_id = oci_core_route_table.spoke_rt.id
   project_name   = var.project_name
   environment    = var.environment
 }
@@ -172,9 +185,11 @@ module "service_gateway" {
 # -----------------------------------------------------------
 
 module "zero_trust_iam" {
-  source         = "./modules/zero_trust_iam"
-  tenancy_ocid   = var.oci_tenancy_ocid
-  compartment_id = var.compartment_ocid
-  project_name   = var.project_name
-  environment    = var.environment
+  source            = "./modules/zero_trust_iam"
+  tenancy_ocid      = var.oci_tenancy_ocid
+  compartment_id    = var.compartment_ocid
+  project_name      = var.project_name
+  environment       = var.environment
+  idp_name          = "my-idp"
+  saml_metadata_xml = "..."
 }

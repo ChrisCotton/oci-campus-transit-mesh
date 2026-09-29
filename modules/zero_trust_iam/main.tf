@@ -27,7 +27,7 @@ resource "oci_identity_dynamic_group" "automation_instances" {
   compartment_id = var.tenancy_ocid
   name           = "${var.project_name}-${var.environment}-automation-workloads"
   description    = "Dynamic group for Jenkins runners, CI/CD instances, and automated workload instances in the ${var.environment} compartment"
-  matching_rule  = "instance.compartment.id = '${var.compartment_id}'"
+  matching_rule  = "ALL {instance.compartment.id = '${var.compartment_id}', tag.${var.project_name}.role = 'automation'}"
 
   freeform_tags = {
     Environment = var.environment
@@ -66,15 +66,13 @@ resource "oci_identity_policy" "automation_least_privilege" {
 # In production, this creates a SAML IdP in the OCI Identity Domain
 # and maps IdP groups to OCI groups for authorization.
 
-resource "oci_identity_saml2_identity_provider" "campus_idp" {
-  count          = var.saml_metadata_url != "" ? 1 : 0
+resource "oci_identity_identity_provider" "campus_idp" {
+  count          = var.saml_metadata_xml != "" ? 1 : 0
   compartment_id = var.tenancy_ocid
   name           = "${var.project_name}-${var.environment}-${var.idp_name}"
   description    = "SAML 2.0 federation with institutional IdP: ${var.idp_name}"
-
-  # In production, fetch the metadata from the IdP URL
-  # metadata_url   = var.saml_metadata_url
-  metadata       = var.saml_metadata_url  # URL or inline metadata XML
+  protocol       = "SAML2"
+  metadata       = var.saml_metadata_xml  # URL or inline metadata XML
 
   freeform_tags = {
     Environment = var.environment
@@ -83,6 +81,14 @@ resource "oci_identity_saml2_identity_provider" "campus_idp" {
     Purpose     = "identity-federation"
   }
 }
+
+resource "oci_identity_idp_group_mapping" "infra_engineers_mapping" {
+  count              = var.saml_metadata_xml != "" ? 1 : 0
+  identity_provider_id = oci_identity_identity_provider.campus_idp[0].id
+  group_id             = oci_identity_group.campus_infra_engineers.id
+  idp_group_name       = "infra-engineers" # This should be a variable in a real implementation
+}
+
 
 # --- Identity Domain Group Mapping ---
 # Maps a group from the institutional IdP to an OCI local group.

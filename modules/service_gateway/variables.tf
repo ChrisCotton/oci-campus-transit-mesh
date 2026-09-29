@@ -8,10 +8,7 @@ variable "vcn_id" {
   type        = string
 }
 
-variable "route_table_id" {
-  description = "OCID of the route table to add the Service Gateway route rule to"
-  type        = string
-}
+
 
 variable "project_name" {
   description = "Project name for resource naming"
